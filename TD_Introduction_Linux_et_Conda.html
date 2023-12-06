@@ -1515,19 +1515,52 @@ pwd
 cd /tmp
 cd -
 pwd</code></pre>
+</div>
+<div id="manipoulation-de-fichiers" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> Manipoulation de
+fichiers</h2>
+<p>A l’aide du <strong>terminal</strong>:</p>
 <ul>
 <li><p>Créer le dossier <code>activite_linux</code> dans votre
-répertoire personnel.</p></li>
-<li><p>Créer deux fichiers vides <code>activite_1.txt</code> et
-<code>activite_2.txt</code> <strong>dans</strong> ce dossier.</p></li>
-<li><p>Créer deux fichiers vide en remplaçant les ’_’ des fichiers
-précédents par des espaces. Est-ce une bonne idée ?</p></li>
+répertoire personnel et rentrez dedans.</p></li>
+<li><p>Copier les fichiers
+<code>/shared/projects/2338_ngs_amu/data/TD_Linux/recette_tarte_pommes.txt</code>
+et
+<code>/shared/projects/2338_ngs_amu/data/TD_Linux/recette_tarte_pommes_conseils_et_astuces.txt</code>
+dans le répertoire <code>activite_linux</code>.</p></li>
+<li><p>Concaténez les contenus de ces deux fichiers dans un nouveau
+fichier <code>recette_complete.txt</code>.</p></li>
+<li><p>Affichez le contenu <code>recette_complete.txt</code>.</p></li>
+<li><p>Éditez le contenu de ce fichier et rajouter une ligne au début
+(par exemple <em>Recette de la tarte aux pommes</em>).</p></li>
+<li><p>Copiez le répertoire <code>recettes</code> contenu dans
+<code>/shared/projects/2338_ngs_amu/data/TD_Linux/</code>dans
+`activite_linux``.</p></li>
+</ul>
+</div>
+<div id="manipulation-de-fichiers-suite" class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span> Manipulation de
+fichiers (suite)</h2>
+<p>Toujours à l’aide du <strong>terminal</strong>:</p>
+<ul>
+<li><p>Renommer le fichier <code>recette_complete.txt</code>en
+remplaçant les <code>_</code> par des espaces. Est-ce une bonne idée
+?</p></li>
 <li><p>Afficher le contenu du dossier <code>activite_linux</code> en
-explorant les différentes options de la commande. Enregistrer ce contenu
-dans un fichier contenant uniquement une ligne par nom de
-fichier.</p></li>
-<li><p>Ajouter les alias suivants de manière permanente dans votre
-environnement</p></li>
+explorant les différentes options de la commande <code>ls</code>.
+Enregistrer ce contenu dans un fichier contenant uniquement une ligne
+par nom de fichier appelé <code>listing.txt</code>.</p></li>
+<li><p>Copiez le fichier <code>listing.txt</code> dans le fichier
+<code>contenu_repertoire.txt</code>.</p></li>
+<li><p>Effacez le fichier <code>listing.txt</code>.</p></li>
+</ul>
+</div>
+<div id="autres-manipulations" class="section level2" number="1.4">
+<h2><span class="header-section-number">1.4</span> Autres
+manipulations</h2>
+<ul>
+<li>Ajouter les alias suivants de manière permanente dans votre
+environnement</li>
 </ul>
 <pre class="bash"><code>cp = &#39;cp -pi&#39;
 rm = &#39;rm -i&#39;
@@ -1538,41 +1571,61 @@ mv = &#39;mv -i&#39;</code></pre>
 portant l’extension <code>.txt</code> dans votre répertoire
 utilisateur.</p></li>
 </ul>
-<div id="solution" class="section level3" number="1.1.1">
-<h3><span class="header-section-number">1.1.1</span> Solution</h3>
+</div>
+<div id="manipulation-des-permissions" class="section level2" number="1.5">
+<h2><span class="header-section-number">1.5</span> Manipulation des
+permissions</h2>
+<ul>
+<li><p>Mettre le fichier <code>recette_complete.txt</code> en
+lecture+ecriture pour <strong>vous</strong>, lecture seule pour le
+<strong>groupe</strong>, lecture seule pour le
+<strong>monde</strong>.</p></li>
+<li><p>Mettre le fichier <code>recettes/tarte_fraises.txt</code> en
+lecture+ecriture pour <strong>vous</strong>, lecture seule pour le
+<strong>groupe</strong>, aucun droit pour le
+<strong>monde</strong>.</p></li>
+<li><p>Enlevez les permissions d’execution sur <code>recettes&#39;</code>:
+Que se passe t’il ? Rétablissez l’accès pour <strong>vous</strong> et le
+<strong>groupe</strong>, lecture seule pour le
+<strong>monde</strong>.</p></li>
+</ul>
+<div id="solution" class="section level3" number="1.5.1">
+<h3><span class="header-section-number">1.5.1</span> Solution</h3>
 </div>
 </div>
-<div id="manipulation-dun-fichier-à-plusieurs-colonnes" class="section level2" number="1.2">
-<h2><span class="header-section-number">1.2</span> Manipulation d’un
+<div id="manipulation-dun-fichier-à-plusieurs-colonnes" class="section level2" number="1.6">
+<h2><span class="header-section-number">1.6</span> Manipulation d’un
 fichier à plusieurs colonnes</h2>
 <ul>
-<li>Télécharger le fichier d’annotations de la levure à l’adresse <a href="ftp://ftp.ensemblgenomes.org/pub/release-37/fungi/gtf/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.37.gtf.gz" class="uri">ftp://ftp.ensemblgenomes.org/pub/release-37/fungi/gtf/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.37.gtf.gz</a></li>
-<li>Décompresser ce fichier</li>
-<li>Supprimer les lignes commençant par <code>#!</code> et stocker le
+<li><p>Télécharger le fichier d’annotations de la levure à l’adresse <a href="ftp://ftp.ensemblgenomes.org/pub/release-37/fungi/gtf/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.37.gtf.gz" class="uri">ftp://ftp.ensemblgenomes.org/pub/release-37/fungi/gtf/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.37.gtf.gz</a>
+à l’aide de la commande <code>wget</code>.</p></li>
+<li><p>Décompresser ce fichier.</p></li>
+<li><p>Supprimer les lignes commençant par <code>#!</code> et stocker le
 résultat dans un fichier . Afficher les 5 premières lignes des données
 restantes et voir leur structure (indice: utiliser
-<code>grep -v</code>).</li>
-<li>Extraire les 4 premières colonnes dans un fichier texte. Parcourir
-ce fichier avec la commande <code>less</code>.</li>
-<li><strong>Repartir des données de départ</strong> et extraire
+<code>grep -v</code>).</p></li>
+<li><p>Extraire les 4 premières colonnes dans un fichier texte appelé
+<code>SC_4col.txt</code>. Parcourir ce fichier avec la commande
+<code>less</code>.</p></li>
+<li><p><strong>Repartir des données de départ</strong> et extraire
 uniquement les lignes correspondant aux gènes et les stocker dans un
 fichier <code>SC_genes.txt</code> (indice: utiliser
-<code>grep -P</code>).</li>
-<li>Extraire de <code>SC_genes.txt</code> la colonne contenant les
+<code>grep -P</code>).</p></li>
+<li><p>Extraire de <code>SC_genes.txt</code> la colonne contenant les
 identifiants de gènes (exemple <code>&quot;YDL248W&quot;</code>). Il faut que les
-guillemets (“) soient supprimés (indice: <code>sed</code>).</li>
-<li>Créer un fichier texte contenant les identifiants
+guillemets (“) soient supprimés (indice: <code>sed</code>).</p></li>
+<li><p>Créer un fichier texte contenant les identifiants
 (<code>gene_id</code>) des gènes présents, leur chromosome, leur
 position chromosomique (début-fin) et le <em>strand</em>. En créer une
 version supplémentaire trié par nom de gène (indice:
-<code>paste</code>).</li>
+<code>paste</code>).</p></li>
 </ul>
-<div id="solution-1" class="section level3" number="1.2.1">
-<h3><span class="header-section-number">1.2.1</span> Solution</h3>
+<div id="solution-1" class="section level3" number="1.6.1">
+<h3><span class="header-section-number">1.6.1</span> Solution</h3>
 </div>
 </div>
-<div id="création-dun-script-bash" class="section level2" number="1.3">
-<h2><span class="header-section-number">1.3</span> Création d’un script
+<div id="création-dun-script-bash" class="section level2" number="1.7">
+<h2><span class="header-section-number">1.7</span> Création d’un script
 bash</h2>
 <ul>
 <li>Ouvrir l’éditeur de fichiers <code>gedit</code> ( ou votre éditeur
@@ -1593,8 +1646,8 @@ commande</li>
 <ul>
 <li>Vérifier le résultat final avec <code>tree</code>.</li>
 </ul>
-<div id="solution-2" class="section level3" number="1.3.1">
-<h3><span class="header-section-number">1.3.1</span> Solution</h3>
+<div id="solution-2" class="section level3" number="1.7.1">
+<h3><span class="header-section-number">1.7.1</span> Solution</h3>
 </div>
 </div>
 </div>
@@ -1653,7 +1706,7 @@ fichiers de votre répertoire en format long.</p></li>
 <li>Demander 1 CPU (Cœur)</li>
 </ul></li>
 <li><p>Soumettre ce script à Slurm (commande <code>sbatch</code>) sur le
-compte <code>form_2022_30</code>.</p></li>
+compte <code>2338_ngs_amu</code>.</p></li>
 <li><p>Le “surveiller” avec <code>squeue</code>.</p></li>
 <li><p>Examiner le résultat de sortie.</p></li>
 </ul>

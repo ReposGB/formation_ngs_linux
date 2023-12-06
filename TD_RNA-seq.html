@@ -1517,7 +1517,7 @@ de traitement, les FASTQ ont été sous-échantilonnés à <span class="math inl
 (<strong>IFB-Core</strong>) dans le chemin suivant:
 <code>$PROJECT_FOLDER/data/RNA-seq_GSE130657_Subsampled</code></p>
 <p>(exemple de
-<code>$PROJECT_FOLDER = /shared/projects/form_2022_30</code>)</p>
+<code>$PROJECT_FOLDER = /shared/projects/2338_ngs_amu</code>)</p>
 </div>
 <div id="données" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Données</h1>
@@ -1583,14 +1583,10 @@ l’environnement de travail sur le cluster IFB</h2>
 <ul>
 <li><p>Se connecter au cluster <strong>IFB-Core</strong>.</p></li>
 <li><p>Créer une arborescence de travail dans votre <strong>répertoire
-personnel</strong>:
-<code>formation_ngs/Rna_seq_GSE130657_Subsampled</code></p></li>
-<li><p>Copier les données <code>*.fastq.gz</code>, ainsi que le fichier
-d’annotation <code>gencode.v38.annotation.gtf</code> et le génome de
-référence <code>hg38.p13.chr8</code> (Limité au <strong>Chromosome
-8</strong> du génome humain).</p></li>
-<li><p>Copier les scripts d’exécution du pipeline dans ce
-répertoire.</p></li>
+personnel</strong>: Exemple: <code>formation_ngs/</code></p></li>
+<li><p>Copier le répertoire
+<code>$PROJECT_FOLDER/data/RNA-seq_GSE130657_Subsampled</code> contenant
+l’ensemble des données dans <code>formation_ngs/</code>.</p></li>
 <li><p>Activer Conda puis <strong>créer</strong> et
 <strong>activer</strong> l’environnement <code>rnaseq</code></p></li>
 <li><p>Installer les utilitaires suivants dans cet
@@ -1610,7 +1606,7 @@ environnement:</p></li>
 FastQC</h2>
 <ul>
 <li>Faire le contrôle qualité des données avec <code>fastqc</code> en
-utilisant <strong>SLURM</strong> sur le compte <code>form_2022_30</code>
+utilisant <strong>SLURM</strong> sur le compte <code>2338_ngs_amu</code>
 avec le script <code>fastqc_all.sh</code>.</li>
 <li>Grouper les résultats en un rapport unique avec
 <code>multiqc</code></li>
@@ -1641,10 +1637,11 @@ ligne de commande pour Trimmomatic: <a href="http://www.usadellab.org/cms/upload
 <div id="td-trimming" class="section level2" number="3.3">
 <h2><span class="header-section-number">3.3</span> TD: Trimming</h2>
 <ul>
-<li><p>Installer l’utilitaire Trimmomatic dans conda</p></li>
-<li><p>Trouver le fichier d’adaptateurs <code>TruSeq3-SE.fa</code> avec
-la commande <code>find</code> dans notre répertoire d’installation de
-Conda. Le copier dans le répertoire de travail.</p></li>
+<li><p>Installer l’utilitaire <strong>Trimmomatic</strong> avec
+conda.</p></li>
+<li><p>J’ai mis dans le répertoire courant le fichier d’adaptateurs
+<code>TruSeq3-SE.fa</code>, disponible avec
+<strong>Trimmomatic</strong>.</p></li>
 <li><p>Editer le script <code>trim_all.sh</code>. Comprendre les
 différentes parties et repérer la ligne d’appel à
 <strong>Trimmomatic</strong>. Y ajouter les bonnes options pour que
@@ -1697,11 +1694,10 @@ ainsi que des statistiques.</p></li>
 <h2><span class="header-section-number">4.2</span> Option 1: pas de TD
 indexage.</h2>
 <p>On récupère le génome indexé directement:</p>
-<pre class="bash"><code>cp /shared/projects/form_2022_30/data/RNA-seq_GSE130657_Subsampled/hg38.p13.chr8  .</code></pre>
-</div>
-<div id="option-td." class="section level2" number="4.3">
-<h2><span class="header-section-number">4.3</span> Option TD.</h2>
-<p>On Récupère les données brutes et on indexe le génome nous même:</p>
+<pre class="bash"><code>cp /shared/projects/2338_ngs_amu/data/RNA-seq_GSE130657_Subsampled/hg38.p13.chr8  .</code></pre>
+<div id="td-optionnel" class="section level3" number="4.2.1">
+<h3><span class="header-section-number">4.2.1</span> TD Optionnel</h3>
+<p>On Récupère les données brutes et on indexe le génome nous même.</p>
 <p>Obtention d’un génome de référence. Il existe plusieurs sites
 majeurs.</p>
 <ul>
@@ -1721,8 +1717,9 @@ annotations (Fichier <strong>GTF</strong>)</p>
 <li><p><strong>Fichier d’annotation GTF</strong>: <a href="http://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_38/gencode.v38.annotation.gtf.gz">gencode.v38.annotation.gtf.gz</a></p></li>
 </ul>
 <p>Le format GTF est défini sur le site de l’UCSC: (<a href="http://genome.ucsc.edu/FAQ/FAQformat" class="uri">http://genome.ucsc.edu/FAQ/FAQformat</a>).</p>
-<div id="td-indexation-avec-star" class="section level3" number="4.3.1">
-<h3><span class="header-section-number">4.3.1</span> TD: Indexation avec
+</div>
+<div id="td-indexation-avec-star" class="section level3" number="4.2.2">
+<h3><span class="header-section-number">4.2.2</span> TD: Indexation avec
 STAR</h3>
 <ul>
 <li>Récupérer le génome de référence humain sur le site de Genecode</li>
@@ -1739,27 +1736,26 @@ de STAR sur la doc <a href="https://physiology.med.cornell.edu/faculty/skrabanek
 <code>sbatch</code>.</li>
 </ul>
 </div>
-<div id="solution-3" class="section level3" number="4.3.2">
-<h3><span class="header-section-number">4.3.2</span> Solution</h3>
+<div id="solution-3" class="section level3" number="4.2.3">
+<h3><span class="header-section-number">4.2.3</span> Solution</h3>
 </div>
 </div>
-<div id="td-alignement-des-séquences" class="section level2" number="4.4">
-<h2><span class="header-section-number">4.4</span> TD: Alignement des
+<div id="td-alignement-des-séquences" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> TD: Alignement des
 séquences:</h2>
-<p>Une fois le génome de référence obtenu et indexé, écrire un scrit
+<p>Une fois le génome de référence obtenu et indexé, écrire un script
 pour aligner nos séquences trimmées avec <strong>STAR</strong> et
 stocker les <strong>BAM</strong> résultants dans
 <code>star_aligned</code>. Générer les indexes des fichiers
 <code>bam</code>avec <strong>samtools</strong>. Le script doit se lancer
 sur le cluster.</p>
-<div id="solution-4" class="section level3" number="4.4.1">
-<h3><span class="header-section-number">4.4.1</span> Solution</h3>
-<p>On enregistre ce script sous <code>staralign.sh</code>. On l’exécute
-par slurm par:</p>
+<p>Vous pouvez partir du squelette <code>staralign.sh</code>.</p>
+<div id="solution-4" class="section level3" number="4.3.1">
+<h3><span class="header-section-number">4.3.1</span> Solution</h3>
 </div>
 </div>
-<div id="visualisation-des-bams-sous-igv" class="section level2" number="4.5">
-<h2><span class="header-section-number">4.5</span> Visualisation des
+<div id="visualisation-des-bams-sous-igv" class="section level2" number="4.4">
+<h2><span class="header-section-number">4.4</span> Visualisation des
 BAMs sous IGV</h2>
 <p><strong>IGV</strong> (<em>Integrative Genomics Viewer</em>) (Ne pas
 confondre avec IGB…) est un programme graphique de visualisation de
@@ -1775,14 +1771,14 @@ un code couleur.</p>
 l’installer sous conda.</p>
 <p>Il permet également de superposer d’autres données (variants, bigWig,
 BED, etc…).</p>
-<div id="td-visualisation-des-fichiers-bam-sous-igv" class="section level3" number="4.5.1">
-<h3><span class="header-section-number">4.5.1</span> TD: Visualisation
+<div id="td-visualisation-des-fichiers-bam-sous-igv" class="section level3" number="4.4.1">
+<h3><span class="header-section-number">4.4.1</span> TD: Visualisation
 des fichiers BAM sous IGV</h3>
 <p>Installer, puis lancer IGV et visualiser 2 échantillons BAM
 <strong>en local</strong> (<strong>pas sur le cluster</strong>).</p>
 </div>
-<div id="solution-5" class="section level3" number="4.5.2">
-<h3><span class="header-section-number">4.5.2</span> Solution</h3>
+<div id="solution-5" class="section level3" number="4.4.2">
+<h3><span class="header-section-number">4.4.2</span> Solution</h3>
 </div>
 </div>
 </div>
@@ -1798,6 +1794,8 @@ l’environnement Conda <code>rnaseq</code> (package
 <li>Appliquer <code>featureCounts</code> sur les fichiers BAM obtenus
 par STAR pour obtenir un fichier de comptage en format texte délimité
 par des tabulation.</li>
+<li>Pour cela, utiliser le squelette de script
+<code>featurecounts.sh</code> et complétez le.</li>
 </ul>
 <div id="solution-6" class="section level3" number="5.1.1">
 <h3><span class="header-section-number">5.1.1</span> Solution</h3>
