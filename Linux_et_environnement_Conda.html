@@ -3617,25 +3617,29 @@ mv=&#39;mv -i&#39; (interactive)
 
 <pre class = 'prettyprint lang-bash'>history 30 # 30 dernières commandes</pre>
 
-</article></slide><slide class=""><hgroup><h2>Manipulation de fichier teste</h2></hgroup><article  id="manipulation-de-fichier-teste" class="smaller ">
+</article></slide><slide class=""><hgroup><h2>Manipulation de fichiers texte</h2></hgroup><article  id="manipulation-de-fichiers-texte" class="smaller ">
 
 <p>Examen du contenu d’un fichier texte:</p>
 
-<p>Télécharger l’exemple sur <a href='http://tinyurl.com/formngs' title=''>http://tinyurl.com/formngs</a> -&gt; data_Linux -&gt; Fichier VCF</p>
+<p>Copiez l’exemple dans votre réperoire courant:</p>
 
-<pre class = 'prettyprint lang-bash'>cat SRR10426968.vcf</pre>
+<pre class = 'prettyprint lang-bash'>cp /shared/projects/2338_ngs_amu/data/TD_Linux/sample.vcf .</pre>
+
+<p>sample.vcf</p>
+
+<pre class = 'prettyprint lang-bash'>cat sample.vcf</pre>
 
 <p>A l’envers</p>
 
-<pre class = 'prettyprint lang-bash'>tac SRR10426968.vcf</pre>
+<pre class = 'prettyprint lang-bash'>tac sample.vcf</pre>
 
 <p>Filtrage des lignes d’un fichier texte</p>
 
-<pre class = 'prettyprint lang-bash'>grep INDEL SRR10426968.vcf</pre>
+<pre class = 'prettyprint lang-bash'>grep PASS sample.vcf</pre>
 
 <p>Défilement contrôlé: <code>more</code> (mieux: <code>less</code> ;-) )</p>
 
-<pre class = 'prettyprint lang-bash'>less SRR10426968.vcf</pre>
+<pre class = 'prettyprint lang-bash'>less sample.vcf</pre>
 
 </article></slide><slide class=""><hgroup><h2>Types de fichiers</h2></hgroup><article  id="types-de-fichiers" class="smaller ">
 
@@ -4101,7 +4105,7 @@ tar xzf rep.tar.gz     # Add -v for verbosity</pre>
 unzip fic.zip
 zip -r rep.zip rep     # Compression d&#39;un répertoire</pre>
 
-</article></slide><slide class=""><hgroup><h2>Manipulation de fichiers texte</h2></hgroup><article  id="manipulation-de-fichiers-texte" class="smaller ">
+</article></slide><slide class=""><hgroup><h2>Manipulation de fichiers texte</h2></hgroup><article  id="manipulation-de-fichiers-texte-1" class="smaller ">
 
 <p>Affichage du début d’un fichier</p>
 
