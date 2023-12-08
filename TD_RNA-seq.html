@@ -1749,13 +1749,13 @@ stocker les <strong>BAM</strong> résultants dans
 <code>star_aligned</code>. Générer les indexes des fichiers
 <code>bam</code>avec <strong>samtools</strong>. Le script doit se lancer
 sur le cluster.</p>
-<p>Vous pouvez partir du squelette <code>staralign.sh</code>, et utilisr
-les options suivantes:</p>
+<p>Vous pouvez partir du squelette <code>staralign.sh</code>, et
+utiliser les options suivantes:</p>
 <ul>
 <li><code>--genomeDir XXXX</code></li>
 <li><code>--readFilesIn XXXX</code></li>
 <li><code>--readFilesCommand gunzip -c</code></li>
-<li>`–outSAMtype BAM SortedByCoordinate``</li>
+<li><code>--outSAMtype BAM SortedByCoordinate</code></li>
 <li><code>--outFileNamePrefix $OUTDIR/$prefix</code></li>
 </ul>
 <p>Documentation STAR: <a href="https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/STARmanual.pdf" class="uri">https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/STARmanual.pdf</a></p>
