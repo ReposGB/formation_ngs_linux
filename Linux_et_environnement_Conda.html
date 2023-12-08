@@ -4565,15 +4565,19 @@ conda config --add channels conda-forge</pre>
 </article></slide><slide class=""><hgroup><h2>Commandes de gestion d’un environnement Conda</h2></hgroup><article  id="commandes-de-gestion-dun-environnement-conda" class="smaller ">
 
 <div class="columns-2">
-<p>Créer un environnement (Exemple: pour le <strong>RNA-Seq</strong>)</p>
+<p>Créer un environnement</p>
 
 <pre class = 'prettyprint lang-bash'>conda create -n rnaseq</pre>
+
+<p>Lister les environnements</p>
+
+<pre class = 'prettyprint lang-bash'>conda env list</pre>
 
 <p>Activer un environnement</p>
 
 <pre class = 'prettyprint lang-bash'>conda activate rnaseq</pre>
 
-<p>Recherche un programme par nom</p>
+<p><br> <br> Recherche un programme par nom</p>
 
 <pre class = 'prettyprint lang-bash'>conda search samtools
 conda search *st*</pre>
@@ -4639,6 +4643,18 @@ conda env create --file envname.yml</pre>
 <p>Connection par <code>ssh</code></p>
 
 <pre class = 'prettyprint lang-bash'>ssh user@core.cluster.france-bioinformatique.fr</pre>
+
+<p>Connection par JupyterHub</p>
+
+<ul>
+<li>Sur l’adresse: <a href='https://jupyterhub.cluster.france-bioinformatique.fr' title=''>https://jupyterhub.cluster.france-bioinformatique.fr</a></li>
+</ul>
+
+<p>Connection RStudio</p>
+
+<ul>
+<li>Sur l’adresse: <a href='https://rstudio.cluster.france-bioinformatique.fr' title=''>https://rstudio.cluster.france-bioinformatique.fr</a></li>
+</ul>
 
 </article></slide><slide class=""><hgroup><h2>Visusalisation des jobs courants</h2></hgroup><article  id="visusalisation-des-jobs-courants" class="smaller ">
 
