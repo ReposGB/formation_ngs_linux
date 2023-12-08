@@ -1609,7 +1609,8 @@ utilisant <strong>SLURM</strong> sur le compte <code>2338_ngs_amu</code>
 avec le script <code>fastqc_all.sh</code>.</li>
 <li>Grouper les résultats en un rapport unique avec
 <code>multiqc</code></li>
-<li>Rapatrier le rapport <code>multiqc</code> en “local”.</li>
+<li>Rapatrier le rapport <code>multiqc</code> en “local” ou ouvrez le
+directement sous Juoyterhub.</li>
 <li>Ouvrir ce rapport et commenter les résultats obtenus pour obtenir un
 bilan de la qualité des données.</li>
 </ul>
@@ -1748,7 +1749,16 @@ stocker les <strong>BAM</strong> résultants dans
 <code>star_aligned</code>. Générer les indexes des fichiers
 <code>bam</code>avec <strong>samtools</strong>. Le script doit se lancer
 sur le cluster.</p>
-<p>Vous pouvez partir du squelette <code>staralign.sh</code>.</p>
+<p>Vous pouvez partir du squelette <code>staralign.sh</code>, et utilisr
+les options suivantes:</p>
+<ul>
+<li><code>--genomeDir XXXX</code></li>
+<li><code>--readFilesIn XXXX</code></li>
+<li><code>--readFilesCommand gunzip -c</code></li>
+<li>`–outSAMtype BAM SortedByCoordinate``</li>
+<li><code>--outFileNamePrefix $OUTDIR/$prefix</code></li>
+</ul>
+<p>Documentation STAR: <a href="https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/STARmanual.pdf" class="uri">https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/STARmanual.pdf</a></p>
 <div id="solution-4" class="section level3" number="4.3.1">
 <h3><span class="header-section-number">4.3.1</span> Solution</h3>
 </div>
