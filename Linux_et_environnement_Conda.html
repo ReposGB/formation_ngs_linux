@@ -4564,7 +4564,6 @@ conda config --add channels conda-forge</pre>
 
 </article></slide><slide class=""><hgroup><h2>Commandes de gestion d’un environnement Conda</h2></hgroup><article  id="commandes-de-gestion-dun-environnement-conda" class="smaller ">
 
-<div class="columns-2">
 <p>Créer un environnement</p>
 
 <pre class = 'prettyprint lang-bash'>conda create -n rnaseq</pre>
@@ -4576,6 +4575,12 @@ conda config --add channels conda-forge</pre>
 <p>Activer un environnement</p>
 
 <pre class = 'prettyprint lang-bash'>conda activate rnaseq</pre>
+
+<p>Sortir de l’environnement courant (retour dans <em>base</em>)</p>
+
+<pre class = 'prettyprint lang-bash'>conda deactivate</pre>
+
+</article></slide><slide class=""><hgroup><h2>Commandes pour l’installation de programmes</h2></hgroup><article  id="commandes-pour-linstallation-de-programmes" class="smaller ">
 
 <p>Recherche un programme par nom</p>
 
@@ -4590,9 +4595,9 @@ conda search *st*</pre>
 
 <pre class = 'prettyprint lang-bash'>conda install samtools fastqc multiqc</pre>
 
-<p>Sortir de l’environnement courant (retour dans <em>base</em>)</p>
+<p>Installer une version particulière d’un programme</p>
 
-<pre class = 'prettyprint lang-bash'>conda deactivate</pre></div>
+<pre class = 'prettyprint lang-bash'>conda install subread=2.0.1 </pre>
 
 </article></slide><slide class=""><hgroup><h2>Lister</h2></hgroup><article  id="lister" class="smaller ">
 
@@ -4615,6 +4620,10 @@ conda update --all</pre>
 
 <pre class = 'prettyprint lang-bash'>conda env export -n envname &gt; envname.yml
 conda env create --file envname.yml</pre>
+
+<p>Aide en ligne</p>
+
+<pre class = 'prettyprint lang-bash'>conda -h</pre>
 
 </article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Utilisation d’un cluster de calcul sous <em>Slurm</em></h2></hgroup><article  id="utilisation-dun-cluster-de-calcul-sous-slurm" class="smaller ">
 
