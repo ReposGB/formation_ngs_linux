@@ -1538,14 +1538,32 @@ fichier <code>recette_complete.txt</code>.</p></li>
 <code>/shared/projects/2338_ngs_amu/data/TD_Linux/</code>dans
 `activite_linux``.</p></li>
 </ul>
+<div id="solution" class="section level3" number="1.2.1">
+<h3><span class="header-section-number">1.2.1</span> Solution</h3>
+<pre class="bash"><code>cd
+mkdir activite_linux
+cd activite_linux
+
+cp /shared/projects/2338_ngs_amu/data/TD_Linux/recette_tarte_pommes.txt .
+cp /shared/projects/2338_ngs_amu/data/TD_Linux/recette_tarte_pommes_conseils_et_astuces.txt .
+
+cat recette_tarte_pommes_conseils_et_astuces.txt recette_tarte_pommes.txt &gt;  recette_complete.txt
+
+less recette_complete.txt
+
+nano recette_complete.txt
+
+cp -r /shared/projects/2338_ngs_amu/data/TD_Linux/recettes . 
+</code></pre>
+</div>
 </div>
 <div id="manipulation-de-fichiers-suite" class="section level2" number="1.3">
 <h2><span class="header-section-number">1.3</span> Manipulation de
 fichiers (suite)</h2>
 <p>Toujours à l’aide du <strong>terminal</strong>:</p>
 <ul>
-<li><p>Renommer le fichier <code>recette_complete.txt</code>en
-remplaçant les <code>_</code> par des espaces. Est-ce une bonne idée
+<li><p>Renommer le fichier <code>recette_complete.txt</code> en
+remplaçant <code>_</code> par un espace. Est-ce une bonne idée
 ?</p></li>
 <li><p>Afficher le contenu du dossier <code>activite_linux</code> en
 explorant les différentes options de la commande <code>ls</code>.
@@ -1555,6 +1573,20 @@ par nom de fichier appelé <code>listing.txt</code>.</p></li>
 <code>contenu_repertoire.txt</code>.</p></li>
 <li><p>Effacez le fichier <code>listing.txt</code>.</p></li>
 </ul>
+<pre class="bash"><code>
+mv recette_complete.txt recette_complete.txt &quot;recette complete.txt&quot; # Mauvaise idée
+
+
+# Différéntes commandes ls
+ls 
+ls -l
+ls -la
+ls -lat
+
+ls -l1 &gt; listing.txt
+
+cp listing.txt contenu_repertoire.txt
+rm listing.txt</code></pre>
 </div>
 <div id="autres-manipulations" class="section level2" number="1.4">
 <h2><span class="header-section-number">1.4</span> Autres
@@ -1572,6 +1604,20 @@ mv = &#39;mv -i&#39;</code></pre>
 portant l’extension <code>.txt</code> dans votre répertoire
 utilisateur.</p></li>
 </ul>
+<div id="solution-1" class="section level3" number="1.4.1">
+<h3><span class="header-section-number">1.4.1</span> Solution</h3>
+<pre class="bash"><code># Ajout des lignes suivantes dans .bashrc
+alias cp=&#39;cp -pi&#39;
+alias rm=&#39;rm -i&#39;
+alias mv=&#39;mv -i&#39;
+
+# 30 dernières commandes
+history 30
+
+# touver les fichiers texte
+find . -name &#39;*txt&#39;
+</code></pre>
+</div>
 </div>
 <div id="manipulation-des-permissions" class="section level2" number="1.5">
 <h2><span class="header-section-number">1.5</span> Manipulation des
@@ -1590,8 +1636,13 @@ Que se passe t’il ? Rétablissez l’accès pour <strong>vous</strong> et le
 <strong>groupe</strong>, lecture seule pour le
 <strong>monde</strong>.</p></li>
 </ul>
-<div id="solution" class="section level3" number="1.5.1">
+<div id="solution-2" class="section level3" number="1.5.1">
 <h3><span class="header-section-number">1.5.1</span> Solution</h3>
+<pre class="bash"><code>chmod 644 recette_complete.txt
+chmod 640 recettes/tarte_fraises.txt
+chmod -x recettes  # Rend l&#39;accées au répertoire mpossible
+chmod 775 recettes
+</code></pre>
 </div>
 </div>
 <div id="manipulation-dun-fichier-à-plusieurs-colonnes" class="section level2" number="1.6">
@@ -1621,8 +1672,24 @@ position chromosomique (début-fin) et le <em>strand</em>. En créer une
 version supplémentaire trié par nom de gène (indice:
 <code>paste</code>).</p></li>
 </ul>
-<div id="solution-1" class="section level3" number="1.6.1">
+<div id="solution-3" class="section level3" number="1.6.1">
 <h3><span class="header-section-number">1.6.1</span> Solution</h3>
+<pre class="bash"><code>wget ftp://ftp.ensemblgenomes.org/pub/release-37/fungi/gtf/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.37.gtf.gz
+gunzip Saccharomyces_cerevisiae.R64-1-1.37.gtf.gz 
+grep -v &#39;^#&#39; Saccharomyces_cerevisiae.R64-1-1.37.gtf &gt; Saccharomyces_cerevisiae.R64-1-1.37_NH.gtf 
+head -n 5 Saccharomyces_cerevisiae.R64-1-1.37_NH.gtf
+cut -f 1-4 Saccharomyces_cerevisiae.R64-1-1.37_NH.gtf &gt; SC_First5cols.txt
+less SC_First5cols.txt
+grep -P &#39;\tgene\t&#39; Saccharomyces_cerevisiae.R64-1-1.37_NH.gtf  &gt; SC_genes.txt
+
+cut -f 9 SC_genes.txt | cut -f 2 -d \&quot; &gt; SC_GeneSymbols.txt
+
+#Alt: cut -f 9 SC_genes.txt | cut -f 1 -d &#39;;&#39;  | cut -f 2  -d &#39; &#39; | sed s/\&quot;//g &gt; SC_GeneSymbols.txt
+
+
+cut -f 1,4-5,7 SC_genes.txt &gt; SC_Genes_Data.txt
+paste SC_GeneSymbols.txt SC_Genes_Data.txt &gt; SC_genes_data_final.txt
+sort -f SC_genes_data_final.txt &gt; SC_genes_data_final_sorted.txt </code></pre>
 </div>
 </div>
 <div id="création-dun-script-bash" class="section level2" number="1.7">
@@ -1646,8 +1713,36 @@ commande</li>
 <ul>
 <li>Vérifier le résultat final avec <code>tree</code>.</li>
 </ul>
-<div id="solution-2" class="section level3" number="1.7.1">
+<div id="solution-4" class="section level3" number="1.7.1">
 <h3><span class="header-section-number">1.7.1</span> Solution</h3>
+<pre class="bash"><code>
+# Mettre le code suivant dans le script &#39;creation_arborescence.sh&#39;
+
+#!/bin/bash
+
+mkdir TP_NSI
+cd TP_NSI
+
+# Création arborescence HTML_CSS
+mkdir HTML_CSS
+mkdir HTML_CSS/Projets
+mkdir HTML_CSS/Divers
+
+# Création arborescence Python
+mkdir Python
+mkdir Python/Divers
+mkdir Python/Listes
+mkdir Python/Fonctions
+mkdir Python/Projets
+
+# Création arborescence Architecture
+mkdir Architecture
+mkdir Architecture/OS
+mkdir Architecture/Linux
+mkdir Architecture/Materiel
+
+Puis chmod +x creation_arborescence.sh
+</code></pre>
 </div>
 </div>
 </div>
@@ -1672,8 +1767,44 @@ de RAM</strong>).</li>
 <li>Tester ces outils et regarder leurs options de ligne de commande. En
 particulier, comment spécifie t-on les entrées-sorties ?</li>
 </ul>
-<div id="solution-3" class="section level3" number="2.1.1">
+<div id="solution-5" class="section level3" number="2.1.1">
 <h3><span class="header-section-number">2.1.1</span> Solution</h3>
+<pre class="bash"><code>
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+chmod +x ./Miniconda3-latest-Linux-x86_64.sh 
+./Miniconda3-latest-Linux-x86_64.sh 
+
+Miniconda3 will now be installed into this location:
+/home/bidaut/miniconda3
+
+  - Press ENTER to confirm the location
+  - Press CTRL-C to abort the installation
+  - Or specify a different location below
+
+[/home/bidaut/miniconda3] &gt;&gt;&gt; ENTER
+
+
+Do you wish the installer to initialize Miniconda3
+by running conda init? [yes|no] yes
+
+# (fermer shell puis le relancer)
+
+conda config --add channels defaults
+conda config --add channels bioconda
+conda config --add channels conda-forge
+
+conda create -n rnaseq
+conda env list
+conda activate rnaseq
+conda install fastqc multiqc samtools subread star trimmomatic
+
+fastqc -h
+multiqc -h
+samtools
+featureCounts
+STAR-h
+trimmomatic
+</code></pre>
 </div>
 </div>
 </div>
