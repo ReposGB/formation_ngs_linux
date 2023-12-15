@@ -1570,6 +1570,46 @@ conclusions.</li>
 </div>
 <div id="solution" class="section level3" number="1.2.2">
 <h3><span class="header-section-number">1.2.2</span> Solution</h3>
+<pre class="bash"><code>vt peek all.sample.filtered.vcf
+peek v0.5
+
+options:     input VCF file            all.sample.filtered.vcf
+
+stats: no. of samples                     :          4
+       no. of chromosomes                 :          3
+
+       ========== Micro variants ==========
+
+       no. of SNP                         :         93
+           2 alleles                      :              93 (3.04) [70/23]
+
+       no. of INDEL                       :         31
+           2 alleles                      :              22 (1.00) [11/11]
+           3 alleles                      :               5 (1.50) [6/4]
+           4 alleles                      :               4 (0.20) [2/10]
+
+       no. of SNP/INDEL                   :          1
+           4 alleles                      :               1 (0.00) [0/1] (0.00) [0/2]
+
+       no. of micro variants              :        125
+
+       ++++++ Other useful categories +++++
+        no. of complex substitutions      :          1
+           4 alleles                      :          1 (0.00) [0/1] (0.00) [0/2]
+
+       ========= General summary ==========
+       no. of VCF records                        :        125
+
+
+Time elapsed: 0.01s
+
+
+## BCFtools
+
+bcftools stats all.sample.filtered.vcf.gz
+bcftools head all.sample.filtered.vcf.gz
+bcftools view -s SRR10426968 all.sample.filtered.vcf.gz &gt; SRR10426968.vcf
+</code></pre>
 </div>
 </div>
 <div id="visualisation" class="section level2" number="1.3">
@@ -1607,16 +1647,21 @@ exemple).</p>
 données d’annotation pour l’humain <code>hg38</code>.</p></li>
 <li><p>Annoter notre fichier VCF de manière à obtenir un nouveau fichier
 annoté.</p></li>
-<li><p>Analyse du rapport <strong>HTML</strong> généré par
+<li><p>Analyse des résultats générés par
 <strong>snpEff</strong>.</p></li>
 </ol>
-<p>Récupérer le rapport HTML généré par SnpEff <strong>en local</strong>
-(Commande <code>scp</code>) puis interprétez le.</p>
-<p>Analyser le rapport et expliquez les différents éléments qui le
-constituent.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Analyser le rapport généré par SnpEff et expliquez les différents
+éléments qui le constituent.</li>
+<li>Analyser le fichier VCF généré par SnpEff et voir les ajouts que
+SnpEff a effectués.</li>
+</ol>
 </div>
 <div id="solution-1" class="section level3" number="1.5.2">
 <h3><span class="header-section-number">1.5.2</span> Solution:</h3>
+<pre class="bash"><code>snpeff download hg38
+snpEff -Xmx4G  hg38 all.sample.filtered.vcf.gz &gt; all.sample.filtered.snpeff.vcf
+less all.sample.filtered.snpeff.vcf</code></pre>
 </div>
 </div>
 <div id="annotation-de-variants-par-annovar" class="section level2" number="1.6">
@@ -1685,6 +1730,30 @@ supplémentaires intéressants si on était dans une analyse tumorale
 </div>
 <div id="solution-2" class="section level3" number="1.6.2">
 <h3><span class="header-section-number">1.6.2</span> Solution</h3>
+<pre class="bash"><code>ANNOVAR_PATH=&#39;/shared/projects/2338_ngs_amu/data/annovar&#39;
+
+$ANNOVAR_PATH/convert2annovar.pl  -format vcf4 -allsample -withfreq all.sample.filtered.vcf.gz &gt; all.sample.filtered.avinput
+
+$ANNOVAR_PATH/table_annovar.pl all.sample.filtered.avinput   $ANNOVAR_PATH/humandb/ -buildver hg38 -out all.sample.filtered  -remove -protocol refGene,ALL.sites.2015_08,gnomad_genome,exac03,avsnp147,ljb26_all -operation gx,f,f,f,f,f -nastring . -polish -xref $ANNOVAR_PATH/example/gene_fullxref.txt 
+ 
+
+# Une fois le traitement fait, on peut importer les résultats en local our ouverture dans un tableur.
+
+
+scp -r &lt;username&gt;@core.cluster.france-bioinformatique.fr:/shared/home/&lt;username&gt;/formation_amu/DNA-seq_PRJNA588789_VariantAnnot/*multianno.txt .
+
+
+# 4.
+
+#- Exon, MSH2, nonsynonymous
+# Rereté: Voir la colonne ALL.sites.Aug2015: freq=0.006= tres faible
+# Rareté: Voir également la colonn exac.ALL= 0.014 = très faible
+# Prédiction impact: voir Polyphen2_HDIV_pred (P= Possibly Damaging&quot;)
+# Prédiction impact: voir Polyphen2_HVAR_pred (B= Benign&quot;)
+# Prédiction impact: voir SIFT_pred (D= Damaging&quot;)
+# dbSNP ID: rs4987188 (colonne avsnp147)
+# Voir https://www.ncbi.nlm.nih.gov/snp/rs4987188?horizontal_tab=true
+</code></pre>
 </div>
 </div>
 <div id="annexe" class="section level2" number="1.7">
