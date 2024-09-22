@@ -1595,6 +1595,18 @@ environnement:</p></li>
 </ul>
 <div id="solution" class="section level3" number="2.2.1">
 <h3><span class="header-section-number">2.2.1</span> Solution:</h3>
+<pre class="bash"><code>ssh &lt;username&gt;@core.cluster.france-bioinformatique.fr
+
+mkdir formation_ngs
+cd formation_ngs
+
+cp -r /shared/projects/tp_formation_amu_2024_166600/data/RNA-seq_GSE130657_Sub 
+
+
+conda create -n rnaseq
+conda activate rnaseq
+conda install fastqc multiqc
+</code></pre>
 </div>
 </div>
 </div>
@@ -1617,6 +1629,13 @@ bilan de la qualité des données.</li>
 </ul>
 <div id="solution-1" class="section level3" number="3.1.1">
 <h3><span class="header-section-number">3.1.1</span> Solution:</h3>
+<pre class="bash"><code>
+
+./scripts/01.fastqc_all.sh
+multiqc .
+
+# Puis télécharger le fichier &#39;multiqc_report.html&#39; sur la machine locale puis l&#39;ouvrir dans un navigateur.
+</code></pre>
 </div>
 </div>
 <div id="présentation-de-trimmomatic" class="section level2" number="3.2">
@@ -1666,10 +1685,69 @@ qualité <strong>15</strong>, taille de fenêtre
 </ul>
 <div id="solution-2" class="section level3" number="3.3.1">
 <h3><span class="header-section-number">3.3.1</span> Solution:</h3>
+<pre class="bash"><code>
+# Installation de Trimmomatic sur le cluster IFB-Core.
+
+conda install trimmomatic
+</code></pre>
+<pre class="bash"><code>
+# Voici un script bash qui exécute Trimmomatic sur tout les fichiers fastq avec les options choisies.
+
+#!/bin/bash
+
+#!/bin/bash
+
+JOBNAME=--job-name=trimming                     # Job name
+NTASKS=--ntasks=1                               # Run on a single task
+NCPU=--cpus-per-task=24                         # 24 cores
+MEM=--mem=5gb                                   # Job memory request
+TIME=--time=02:00:00                            # Time limit hrs:min:sec
+OUTLOG=--output=LOGS/trimming_%j.log            # Standard output and error log
+ACCOUNT=--account=$(&lt;slurm_account.txt)         # Account
+
+FASTQDIR=&quot;00-FASTQ&quot;
+OUTDIR=&quot;02-TRIM&quot;
+mkdir $OUTDIR
+
+for fastqgz in $(ls $FASTQDIR/*.fastq.gz)
+do
+    echo &quot;process $fastqgz&quot;
+
+    trimmed=${fastqgz/.fastq.gz/.trim.fastq.gz}
+
+    summ=${fastqgz/.fastq.gz/.trim.summary.txt}
+
+
+    trimmed=${trimmed/$FASTQDIR/$OUTDIR}
+        summ=${summ/$FASTQDIR/$OUTDIR}
+
+
+    sbatch $JOBNAME $NTASKS $MEM $TIME $OUTLOG $ACCOUNT --wrap &quot;trimmomatic SE -threads 24 -summary $summ $fastqgz $trimmed   ILLUMINACLIP:TruSeq3-SE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15&quot;
+
+done
+</code></pre>
 <p>Détail des options:</p>
+<pre class="bash"><code>
+#- `ILLUMINACLIP:TruSeq3-SE.fa:2:30:10`: Suppression des séquences adaptatrices correspondant au kit Illumina *TruSeq Stranded Total RNA*.
+#- `LEADING:3`: Supprime les bases à partir du début, si elles sont en dessous de la qualité 3.
+#- `TRAILING:3`Supprime les bases à partir de la fin, si elles sont en dessous de la qualité 3.
+#- `SLIDINGWINDOW:4:15`: supprime les bases aux extrémités dont la qualité est inférieure à 15 sur une fenetre glissants de taille 4.
+
+
+# Pour couper systématiquement le début et la fin des séquences, on peut utiliser les options:
+
+#- `CROP:n ` Coupe n bases depuis la fin du read
+#- `HEADCROP:n` Coupe n bases depuis le début du read
+
+
+# Enregistrer ce script dans le fichier `trimall.sh`et l&#39;exécuter: 
+
+./scripts/02.trim_all.sh
+watch squeue -u &lt;username&gt;</code></pre>
 <p>Après avoir exécuté Trimmomatic, on peut refaire tourner
 <code>multiqc</code> pour vérifier <strong>l’effet du
 trimming</strong>.</p>
+<pre class="bash"><code>multiqc .</code></pre>
 </div>
 </div>
 </div>
@@ -1737,6 +1815,44 @@ de STAR sur la doc <a href="https://physiology.med.cornell.edu/faculty/skrabanek
 </div>
 <div id="solution-3" class="section level3" number="4.2.2">
 <h3><span class="header-section-number">4.2.2</span> Solution</h3>
+<pre class="bash"><code>
+# Installation de `star`, `samtools` et récupération des données:
+
+conda install star samtools
+
+mkdir hg38.p13.chr8
+wget http://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_38/GRCh38.p13.genome.fa.gz
+mv GRCh38.p13.genome.fa.gz hg38.p13.chr8
+
+wget http://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_38/gencode.v38.annotation.gtf.gz</code></pre>
+<pre class="bash"><code>
+# Extraction du chromosome 8 du génome humain et indexation:
+
+cd hg38.p13.chr8
+gunzip GRCh38.p13.genome.fa.gz
+samtools faidx GRCh38.p13.genome.fa chr8 &gt; GRCh38.p13.chr8.fa 
+rm GRCh38.p13.genome.fa
+cd ..
+
+# Mettre le code suivant dans &#39;star_chr8_index.sh&#39;:
+
+#!/bin/bash
+
+
+#SBATCH --job-name=starchr8index                  # Job name
+#SBATCH --ntasks=1                                # Run on 1 node
+#SBATCH --core-per-task=8                         # Run on 8 core
+#SBATCH --mem=10gb                                # Job memory request
+#SBATCH --time=05:00:00                           # Time limit hrs:min:sec
+#SBATCH --output=starchr8index_%j.log             # Standard output and error log
+
+STAR --runThreadN 8 --runMode genomeGenerate --genomeDir  hg38.p13.chr8 --genomeFastaFiles hg38.p13.chr8/GRCh38.p13.chr8.fa --sjdbGTFfile gencode.v38.annotation.gtf --sjdbOverhang 74
+
+
+
+# Puis
+sbatch -A tp_formation_amu_2024_166600 ./star_align_all.sh 
+</code></pre>
 </div>
 </div>
 <div id="td-alignement-des-séquences" class="section level2" number="4.3">
@@ -1760,6 +1876,45 @@ suivantes:</p>
 <p>Documentation STAR: <a href="https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/STARmanual.pdf" class="uri">https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/STARmanual.pdf</a></p>
 <div id="solution-4" class="section level3" number="4.3.1">
 <h3><span class="header-section-number">4.3.1</span> Solution</h3>
+<pre class="bash"><code>
+Voici un script bash qui exécute `star` sur tout les fichiers fastq trimmés:
+
+#!/bin/bash
+
+JOBNAME=--job-name=staralign                    # Job name
+NTASKS=--ntasks=1                               # Run on a single task
+NCPU=--cpus-per-task=24                         # 24 cores
+MEM=--mem=40gb                                  # Job memory request
+TIME=--time=05:00:00                            # Time limit hrs:min:sec
+OUTLOG=--output=LOGS/staralign_%j.log           # Standard output and error log
+ACCOUNT=--account=$(&lt;slurm_account.txt)         # Account
+
+TRIMDIR=02-TRIM
+OUTDIR=03-BAM
+mkdir $OUTDIR
+
+for fastqgz in $(ls $TRIMDIR/*.trim.fastq.gz)
+do
+    echo &quot;process $fastqgz&quot;
+
+    prefix=${fastqgz/.fastq.gz/\_}
+    bam=${fastqgz/.fastq.gz/\_Aligned.sortedByCoord.out.bam}
+
+    prefix=${prefix/$TRIMDIR/$OUTDIR}
+        bam=${bam/$TRIMDIR/$OUTDIR}
+
+    echo &quot;output $bam&quot;
+
+    sbatch $JOBNAME $NTASKS $MEM $TIME $OUTLOG $ACCOUNT --wrap &quot;STAR --runThreadN 24  --genomeDir hg38.p13.chr8 --readFilesIn $fastqgz  --readFilesCommand gunzip -c --outSAMtype BAM SortedByCoordinate  --outFileNamePrefix $prefix; samtools index -@24 $bam&quot;
+
+
+done
+
+
+# On enregistre ce script sous `03.star_align.sh`. On l&#39;exécute par:
+
+./scripts/03.star_align.sh
+watch squeue -u &lt;username&gt;</code></pre>
 </div>
 </div>
 <div id="visualisation-des-bams-sous-igv" class="section level2" number="4.4">
@@ -1788,6 +1943,13 @@ des fichiers BAM sous IGV</h3>
 </div>
 <div id="solution-5" class="section level3" number="4.4.2">
 <h3><span class="header-section-number">4.4.2</span> Solution</h3>
+<pre class="bash"><code>
+# On lance un terminal sur notre machine en local. On active conda et on installe IGV:
+conda install igv
+
+# On récupère les fichiers `bam`et `bai` en &#39;local&#39;. Puis on lance IGV et on ouvre les échantillons récupérés.
+
+igv</code></pre>
 </div>
 </div>
 </div>
@@ -1809,6 +1971,32 @@ par des tabulation.</li>
 </ul>
 <div id="solution-6" class="section level3" number="5.1.1">
 <h3><span class="header-section-number">5.1.1</span> Solution</h3>
+<pre class="bash"><code># Sur le cluster IFB, installer **subread**:
+
+conda install subread
+
+# Ecrire le script suivant et le stocker dans `featurecount.sh`.
+
+#!/bin/bash
+
+
+JOBNAME=--job-name=featurecounts                # Job name
+NTASKS=--ntasks=1                               # Run on a single task
+NCPU=--cpus-per-task=1                          # 1 cores
+MEM=--mem=5gb                                   # Job memory request
+TIME=--time=02:00:00                            # Time limit hrs:min:sec
+OUTLOG=--output=LOGS/featurecounts_%j.log       # Standard output and error log
+ACCOUNT=--account=$(&lt;slurm_account.txt)         # Account
+
+
+sbatch $JOBNAME $NTASKS $MEM $TIME $OUTLOG $ACCOUNT --wrap &quot;featureCounts -a gencode.v38.annotation.gtf -o GSE130657_subsampled_chr8.txt  $INPUT_DIR/*bam&quot;
+
+# Puis faire tourner la commande suivante:
+
+./scripts/04.featurecounts.sh 
+
+watch squeue -u &lt;username&gt;
+</code></pre>
 </div>
 </div>
 <div id="td-multiqc-final" class="section level2" number="5.2">
@@ -1820,6 +2008,32 @@ final</h2>
 </ul>
 <div id="solution-7" class="section level3" number="5.2.1">
 <h3><span class="header-section-number">5.2.1</span> Solution</h3>
+<pre class="bash"><code>
+# Sur le cluster, faire tourner les commandes suivantes:
+
+rm -rf multiqc*
+
+multiqc .
+
+
+ /// MultiQC 🔍 | v1.12
+
+|           multiqc | Search path : /shared/ifbstor1/home/&lt;username&gt;/formation_ngs/data_rna_seq_GSE130657/subsampling_analysis
+|         searching | ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 105/105  
+|              star | Found 6 reports
+|       trimmomatic | Found 6 logs
+|            fastqc | Found 6 reports
+|           multiqc | Compressing plot data
+|           multiqc | Report      : multiqc_report.html
+|           multiqc | Data        : multiqc_data
+|           multiqc | MultiQC complete
+
+
+# Puis en local
+scp -rp &lt;username&gt;@core.cluster.france-bioinformatique.fr:/shared/home/gbidaut/formation_ngs/data_rna_seq_GSE130657/subsampling_analysis/multiqc* .
+
+
+# Puis ouvrir le fichier `multiqc_report.html` avec un navigateur web (Firefox par exemple).</code></pre>
 <p><br> <br> <br> <br></p>
 <hr />
 <div style="text-align: center">
