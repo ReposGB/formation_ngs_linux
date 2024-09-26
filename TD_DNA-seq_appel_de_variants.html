@@ -2854,6 +2854,16 @@ environnement:</p></li>
 </ul>
 <div id="solution" class="section level3" number="2.1.1">
 <h3><span class="header-section-number">2.1.1</span> Solution:</h3>
+<pre class="bash"><code>
+conda create -n dnaseq
+conda activate dnaseq
+
+condat install fastqc multiqc
+conda install bwa samtools 
+conda install trimmomatic picard
+
+conda install varscan snpeff
+</code></pre>
 </div>
 </div>
 <div id="structure-du-pipeline-bioinformatique" class="section level2" number="2.2">
@@ -2862,8 +2872,8 @@ bioinformatique</h2>
 <p>Ce pipeline est basé sur l’utilisation de <strong>BWA</strong> et
 <strong>Varscan</strong>. Il permets l’appel de SNPs et d’INDELS en
 génétique constitutionnelle.</p>
-<div class="grViz html-widget html-fill-item" id="htmlwidget-8ac82d38ddd58134e440" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-8ac82d38ddd58134e440">{"x":{"diagram":"digraph {\n\ngraph [layout = dot, rankdir = TB]\n\n# define the global styles of the nodes. We can override these in box if we wish\nnode [shape = rectangle, style = filled, fillcolor = Linen]\n\ndata [label = \"Dataset\", shape = folder, fillcolor = Beige]\nqc_control [label =  \"Contrôle Qualité\n(FASTQC)\"]\ntrimming [label = \"Trimming\n(Trimmomatic)\"]\nalignment [label = \"Alignement\n(BWA MEM)\"]\nmarkduplicate [label =\"Marquage Duplicats + Readgroups\n(picard)\"]\nvariantalling [label= \"Variant Calling\n(Varscan)\"]\nvariantannotation [label = \"Variant Annotation\n(snpEff)\"]\nvcfdata [label = \"VCF annoté\" shape = folder]\n\n# edge definitions with the node IDs\ndata  -> qc_control -> trimming  -> alignment -> markduplicate -> variantalling -> variantannotation -> vcfdata\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-38d1eaf0fcce0c04b17a" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-38d1eaf0fcce0c04b17a">{"x":{"diagram":"digraph {\n\ngraph [layout = dot, rankdir = TB]\n\n# define the global styles of the nodes. We can override these in box if we wish\nnode [shape = rectangle, style = filled, fillcolor = Linen]\n\ndata [label = \"Dataset\", shape = folder, fillcolor = Beige]\nqc_control [label =  \"Contrôle Qualité\n(FASTQC)\"]\ntrimming [label = \"Trimming\n(Trimmomatic)\"]\nalignment [label = \"Alignement\n(BWA MEM)\"]\nmarkduplicate [label =\"Marquage Duplicats + Readgroups\n(picard)\"]\nvariantalling [label= \"Variant Calling\n(Varscan)\"]\nvariantannotation [label = \"Variant Annotation\n(snpEff)\"]\nvcfdata [label = \"VCF annoté\" shape = folder]\n\n# edge definitions with the node IDs\ndata  -> qc_control -> trimming  -> alignment -> markduplicate -> variantalling -> variantannotation -> vcfdata\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="etapes-préliminaires" class="section level1" number="3">
@@ -3033,6 +3043,17 @@ l’utiliser pour faire l’appel de variants sur les fichiers
 </ul>
 <div id="solution-1" class="section level3" number="5.1.1">
 <h3><span class="header-section-number">5.1.1</span> Solution</h3>
+<pre class="bash"><code>
+#!/bin/bash
+
+BAM_DIR=&quot;03-ALIGN&quot;
+mpileup_file=&quot;04_nikitin.mpileup&quot;
+variant_file=&quot;05.nikitin.varscan.multi.vcf&quot;
+
+samtools mpileup -B -f hg38.genome.chr237/hg38_chr2_3_7.fasta  $BAM_DIR/*marked_duplicates.RG.bam  &gt; $mpileup_file
+
+varscan mpileup2cns $mpileup_file  -variants --vcf-sample-list sample_list.txt  --strand-filter 0 --p-value 0.01 --min-var-freq 0.02 --output-vcf 1 &gt; $variant_file
+</code></pre>
 </div>
 </div>
 </div>
@@ -3075,6 +3096,11 @@ Excel.</li>
 </div>
 <div id="solution-2" class="section level3" number="6.1.2">
 <h3><span class="header-section-number">6.1.2</span> Solution</h3>
+<pre class="bash"><code>
+bcftools stats 50.nikitin.varscan.multi.header.vcf
+bcftools view -h 50.nikitin.varscan.multi.header.vcf
+bcftools view -s SRR10426968 50.nikitin.varscan.multi.header.vcf &gt; SRR10426968.vcf
+</code></pre>
 </div>
 </div>
 <div id="annotation-des-variants" class="section level2" number="6.2">
@@ -3103,6 +3129,16 @@ expliquez son organisation.</li>
 </ol>
 <div id="solution-3" class="section level3" number="6.2.1">
 <h3><span class="header-section-number">6.2.1</span> Solution</h3>
+<pre class="bash"><code>
+conda install snpeff
+
+# Télécharger la base de données hg38 si besoin (
+snpEff download hg38
+
+snpEff  -Xmx8g  hg38 05.nikitin.varscan.multi.header.vcf &gt; 05.nikitin.varscan.multi.header.snpeff.vcf
+
+less 05.nikitin.varscan.multi.vcf.snpeff.vcf
+</code></pre>
 </div>
 </div>
 <div id="visualisation" class="section level2" number="6.3">
@@ -3183,6 +3219,30 @@ supplémentaires intéressants si on était dans une analyse tumorale
 </div>
 <div id="solution-4" class="section level3" number="6.4.2">
 <h3><span class="header-section-number">6.4.2</span> Solution</h3>
+<pre class="bash"><code>
+./scripts/08.annot_annovar.sh
+
+# Une fois le traitement fait, on peut importer les résultats en local our ouverture dans un tableur.
+
+
+scp -r &lt;username&gt;@core.cluster.france-bioinformatique.fr:/shared/home/&lt;username&gt;/formation_amu/DNA-seq_PRJNA588789_VariantAnnot/*multianno.txt .
+
+
+# 4.
+
+#- Exon
+# MSH2
+# nonsynonymous
+# G-&gt;A
+# Rereté: Voir la colonne ALL.sites.Aug2015: freq=0.006= tres faible
+# Rareté: Voir également la colonn exac.ALL= 0.014 = très faible
+# Prédiction impact: voir Polyphen2_HDIV_pred (P= Possibly Damaging&quot;)
+# Prédiction impact: voir Polyphen2_HVAR_pred (B= Benign&quot;)
+# Prédiction impact: voir SIFT_pred (D= Damaging&quot;)
+# dbSNP ID: rs4987188 (colonne avsnp147)
+# Voir https://www.ncbi.nlm.nih.gov/snp/rs4987188?horizontal_tab=true
+# COSMIC
+</code></pre>
 </div>
 </div>
 <div id="licence" class="section level2" number="6.5">
